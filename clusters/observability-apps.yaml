@@ -1,0 +1,68 @@
+# This tells ArgoCD to deploy the Prometheus Stack
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/marickromer/homelab-infrastructure' # <--- VERIFY THIS IS YOUR URL
+    targetRevision: HEAD
+    path: infrastructure/observability/kube-prometheus-stack
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true 
+
+---
+# This tells ArgoCD to deploy Loki
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/marickromer/homelab-infrastructure'
+    targetRevision: HEAD
+    path: infrastructure/observability/loki
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# This tells ArgoCD to deploy Promtail
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: promtail
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/marickromer/homelab-infrastructure'
+    targetRevision: HEAD
+    path: infrastructure/observability/promtail
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
