@@ -27,6 +27,11 @@ kube-prometheus-stack:
 
   # Visualization: Config Grafana
   grafana:
+    service:
+      type: LoadBalancer
+      loadBalancerIP: 192.168.1.102  # <--- Pick a free IP in your MetalLB range
+      port: 80                       # Expose on port 80 (standard HTTP)
+
     adminPassword: "admin" # Change this on first login or use SealedSecrets later
     # Automatically add Loki as a data source so we can see logs
     additionalDataSources:
