@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: resume
-        image: nginx:alpine  # <--- CHANGE THIS if you have your own image
+        image: ghcr.io/marickromer/marick-resume-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:
