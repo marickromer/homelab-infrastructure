@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: resume-ingress
+  namespace: default
+  annotations:
+    # This triggers Cert-Manager to solve the DNS challenge
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # This forces HTTP users to redirect to HTTPS
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - resume.marick-devops.online
+    secretName: resume-tls-secret # <--- Cert-Manager will store the cert here
+  rules:
+  - host: resume.marick-devops.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: resume-service
+            port:
+              number: 80
