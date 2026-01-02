@@ -1,0 +1,37 @@
+kube-prometheus-stack:
+  # K3s Specific: Disable monitors for components K3s hides/embeds
+  kubeEtcd:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  
+  # RAM Saving: Reduce retention (Default is 10-15 days)
+  prometheus:
+    prometheusSpec:
+      retention: 2d
+      resources:
+        limits:
+          memory: 1Gi
+        requests:
+          memory: 512Mi
+      # Persistent Storage (Optional: set enabled: false if you don't care about history)
+      storageSpec: 
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 5Gi
+
+  # Visualization: Config Grafana
+  grafana:
+    adminPassword: "admin" # Change this on first login or use SealedSecrets later
+    # Automatically add Loki as a data source so we can see logs
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        url: http://loki.observability.svc.cluster.local:3100
+        access: proxy
+        isDefault: false
